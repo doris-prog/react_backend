@@ -4,6 +4,7 @@ const userService = require('../services/userService');
 const jwt = require('jsonwebtoken');
 
 router.post('/register', async (req, res) => {
+    console.log("post: ", req.body);
     try {
         const {
             name,
@@ -13,6 +14,7 @@ router.post('/register', async (req, res) => {
             marketingPreferences,
             country
         } = req.body;
+        console.log(name, email, password, salutation, marketingPreferences, country);
 
         const userId = await userService.registerUser({
             name,
@@ -26,7 +28,8 @@ router.post('/register', async (req, res) => {
             message: "User registered successfully", userId
         });
     } catch (error) {
-        res.status(400).json({ message: error.mesage });
+        console.error("post/register: ", error);
+        res.status(400).json({ message: error.message });
     }
 });
 

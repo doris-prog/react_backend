@@ -9,7 +9,6 @@ async function updateCart(userId, cartItems) {
     if (!Array.isArray(cartItems)) {
         throw new Error('Cart items must be an array');
     }
-
     await cartData.updateCart(userId, cartItems);
 }
 

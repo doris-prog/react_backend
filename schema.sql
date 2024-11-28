@@ -1,4 +1,4 @@
-USE ecommerce;
+USE petsShop;
 
 -- Products table
 CREATE TABLE products (
@@ -15,6 +15,7 @@ CREATE TABLE users (
   email VARCHAR(100) NOT NULL UNIQUE,
   password VARCHAR(255) NOT NULL,
   salutation VARCHAR(10),
+  marketing_preferences VARCHAR(50),
   country VARCHAR(50),
   created_at DATETIME DEFAULT NOW()
 );

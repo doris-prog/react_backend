@@ -8,7 +8,7 @@ async function getUserByEmail(email) {
     return rows[0];
 }
 
-async function createUser({ name, email, password, salutation, country, marketingPreferences }) {
+async function createUser({ name, email, password, salutation, country, marketing_preferences }) {
     if (!email || !password || typeof email !== 'string' || typeof password !== 'string') {
         throw new Error('Invalid user data');
     }
@@ -25,15 +25,15 @@ async function createUser({ name, email, password, salutation, country, marketin
 
         const userId = userResult.insertId;
 
-        if (Array.isArray(marketingPreferences)) {
-            for (const preference of marketingPreferences) {
+        if (Array.isArray(marketing_preferences)) {
+            for (const preference of marketing_preferences) {
                 const [preferenceResult] = await connection.query(
                     `SELECT id FROM marketing_preferences WHERE preference = ?`,
                     [preference]
                 );
 
                 if (preferenceResult.length === 0) {
-                    throw new Error('Invalid marketing preference: ${preference}');
+                    throw new Error(`Invalid marketing preference: ${preference}`);
                 }
 
                 const preferenceId = preferenceResult[0].id;
@@ -48,6 +48,7 @@ async function createUser({ name, email, password, salutation, country, marketin
         await connection.commit();
         return userId;
     } catch (error) {
+        console.error("createUser: ", error);
         await connection.rollback();
         throw error;
     } finally {
@@ -55,7 +56,7 @@ async function createUser({ name, email, password, salutation, country, marketin
     }
 }
 
-async function updateUser(id, { name, email, password, salutation, country, marketingPreferences }) {
+async function updateUser(id, { name, email, password, salutation, country, marketing_preferences }) {
     if (!id || !email || !password || typeof id !== 'number' || typeof email !== 'string' || typeof password !== 'string') {
         throw new Error('Invalid user data');
     }
@@ -70,8 +71,8 @@ async function updateUser(id, { name, email, password, salutation, country, mark
         );
 
         await connection.query(`DELETE FROM user_marketing_preferences WHERE user_id = ?`, [id]);
-        if (Array.isArray(marketingPreferences)) {
-            for (const preference of marketingPreferences) {
+        if (Array.isArray(marketing_preferences)) {
+            for (const preference of marketing_preferences) {
                 await connection.query(
                     `INSERT INTO user_marketing_preferences (user_id, preference) VALUES (?, ?)`,
                     [id, preference]
